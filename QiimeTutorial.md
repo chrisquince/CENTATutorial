@@ -258,7 +258,8 @@ IMPORTANT: Removing points from a PCoA plot, as is suggested above for data expl
   re-running core_diversity_analyses.py. You should output the results to a different directory 
   than you created above (e.g., cdout_no_abx).
 
-Next steps
+##Next steps
+
 This tutorial illustrated some of the basic features of QIIME, and there are a lot of places to go from here.
  If you're interested in seeing additional visualizations, you should check out the 
  [QIIME overview tutorial](http://www.qiime.org/tutorials/tutorial.html). 
@@ -268,9 +269,4 @@ This tutorial illustrated some of the basic features of QIIME, and there are a l
  If you're interested in some possibilities for statistical analyses you can try the [supervised learning](http://www.qiime.org/tutorials/running_supervised_learning.html) or 
  [distance matrix comparison](http://qiime.org/tutorials/distance_matrix_comparison.html) tutorials, both of which can be adapted to use data generated in this tutorial.
 
-##Precomputed results
-
-In case you're having trouble running the steps above, for example because of a broken 
-QIIME installation, all of the output generated above has been precomputed. 
-You can access this by running the cell below.
 
