@@ -133,15 +133,15 @@ for file in MetaTutorial/{C,H}*R12.fasta
 do 
    
    stub=${file%_R12.fasta}
-
+   stub=${stub#MetaTutorial\/}
    echo $stub
 
    bwa mem -t 8 contigs/final_contigs_c10K.fa $file > Map/${stub}.sam
 done
 ```
 
-Here we are using 32 threads for bwa mem '-t 32' you can adjust this to whatever is suitable for your machine.
-Then we need to calculate our contig lengths using one of the Desman scripts.
+Here we are using 8 threads for bwa mem '-t 8' you can adjust this to whatever is suitable for your machine.
+Then we need to calculate our contig lengths.
 
 ```bash
 python ~/bin/Lengths.py -i contigs/final_contigs_c10K.fa > contigs/final_contigs_c10K.len
@@ -155,7 +155,10 @@ do
     stub=${file%.sam}
     stub2=${stub#Map\/}
     echo $stub	
-    (samtools view -h -b -S $file > ${stub}.bam; samtools view -b -F 4 ${stub}.bam > ${stub}.mapped.bam; samtools sort -m 1000000000 ${stub}.mapped.bam -o ${stub}.mapped.sorted.bam; bedtools genomecov -ibam ${stub}.mapped.sorted.bam -g contigs/final_contigs_c10K.len > ${stub}_cov.txt)&
+    samtools view -h -b -S $file > ${stub}.bam 
+    samtools view -b -F 4 ${stub}.bam > ${stub}.mapped.bam
+    samtools sort ${stub}.mapped.bam ${stub}.mapped.sorted
+    bedtools genomecov -ibam ${stub}.mapped.sorted.bam -g contigs/final_contigs_c10K.len > ${stub}_cov.txt
 done
 ```
 
