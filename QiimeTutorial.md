@@ -9,13 +9,22 @@ You will be walked through this with Marius but basically you need to:
 * Launch a new *instance* from the *CENTA-final* image select *public* network and *climb.medium* 
 configuration
 
-* Once your instance is booted note the IP address assume it is www.xxx.yyy.zzz
+* Once your instance is booted note the IP address assume it is vvv.xxx.yyy.zzz
 
 * Then login to instance from MacBook provided
 
 ```
 ssh ubuntu@137.205.68.252
 ```
+
+* All output from the tutorials should be visible through a webserver hosted on the VM. To access 
+your output just go to the webpage:
+
+```
+http://vvv.xxx.yyy.zzz
+```
+
+This publishes all the files in the Projects directory that we will be using below.
 
 ## Introduction
 
