@@ -179,7 +179,7 @@ and finally run the following perl script to collate the coverages across sample
 from csv to tsv to be compatible with CONCOCT:
 
 ```bash
-$DESMAN/scripts/Collate.pl Map | tr "," "\t" > Coverage.tsv
+Collate.pl Map | tr "," "\t" > Coverage.tsv
 ```
 
 and run CONCOCT:
@@ -187,7 +187,7 @@ and run CONCOCT:
 mkdir Concoct
 cd Concoct
 mv ../Coverage.tsv .
-concoct --coverage_file Coverage.tsv --composition_file ../contigs/final_contigs_c10K.fa
+concoct --coverage_file Coverage.tsv --composition_file ../contigs/final_contigs_c10K.fa -c 40
 cd ..
 ```
 
