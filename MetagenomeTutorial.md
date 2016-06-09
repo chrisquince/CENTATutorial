@@ -73,20 +73,118 @@ a collection of different software programs:
 
 2. [bwa](https://github.com/lh3/bwa): Necessary for mapping reads onto contigs
 
-4. [samtools] (http://www.htslib.org/download/): Utilities for processing mapped files
+3. [samtools] (http://www.htslib.org/download/): Utilities for processing mapped files
 
-5. [CONCOCT](https://github.com/BinPro/CONCOCT): Our own contig binning algorithm
+4. [CONCOCT](https://github.com/BinPro/CONCOCT): Our own contig binning algorithm
 
-6. [prodigal] (https://github.com/hyattpd/prodigal/releases/): Used for calling genes on contigs
+5. [prodigal] (https://github.com/hyattpd/prodigal/releases/): Used for calling genes on contigs
 
-7. [gnu parallel] (http://www.gnu.org/software/parallel/): Used for parallelising rps-blast
+6. [gnu parallel] (http://www.gnu.org/software/parallel/): Used for parallelising rps-blast
 
-8. [standalone blast] (http://www.ncbi.nlm.nih.gov/books/NBK52640/): Need rps-blast
+7. [standalone blast] (http://www.ncbi.nlm.nih.gov/books/NBK52640/): Needs rps-blast
 
-9. COG RPS database: ftp://ftp.ncbi.nih.gov/pub/mmdb/cdd/little_endian/ Cog databases
+8. [COG RPS database] (ftp://ftp.ncbi.nih.gov/pub/mmdb/cdd/little_endian/): Cog databases
 
-10. [GFF python parser] (https://github.com/chapmanb/bcbb/tree/master/gff)
+9. [GFF python parser] (https://github.com/chapmanb/bcbb/tree/master/gff)
 
+#Co-assembly
 
-a quick co-assembly of these samples using a program called megahit:
+We begin by performing a co-assembly of these samples using a program called megahit:
+
+```
+cat MetaTutorial/*R12.fasta > MetaTutorial/All_R12.fasta
+megahit -r MetaTutorial/All_R12.fasta --presets meta -o Coassembly -t 8
+```
+
+We can have a look at how good the assembly was:
+```
+contig-stats.pl < Coassembly/final.contigs.fa
+```
+Not great, but expected given the low read number.
+
+We will now perform CONCOCT binning of these contigs. As explained in [Alneberg et al.](http://www.nature.com/nmeth/journal/v11/n11/full/nmeth.3103.html) 
+there are good reasons to cut up contigs prior to binning. We will use a script from CONCOCT to do this. For convenience we 
+have created an environmental variables that points to the CONCOCT install directory:
+```
+echo $CONCOCT
+```
+
+First we cut up contigs and place in new dir:
+
+```bash
+mkdir contigs
+python $CONCOCT/scripts/cut_up_fasta.py -c 10000 -o 0 -m Coassembly/final.contigs.fa > contigs/final_contigs_c10K.fa
+```
+
+Having cut-up the contigs the next step is to map all the reads from each sample back onto them. First index the contigs with bwa:
+
+```bash
+cd contigs
+bwa index final_contigs_c10K.fa
+cd ..
+```
+
+Then perform the actual mapping you may want to put this in a shell script:
+
+```bash
+mkdir Map
+
+for file in MetaTutorial/{C,H}*R12.fasta
+do 
+   
+   stub=${file%_R12.fasta}
+
+   echo $stub
+
+   bwa mem -t 8 contigs/final_contigs_c10K.fa $file > Map/${stub}.sam
+done
+```
+
+Here we are using 32 threads for bwa mem '-t 32' you can adjust this to whatever is suitable for your machine.
+Then we need to calculate our contig lengths using one of the Desman scripts.
+
+```bash
+python ~/bin/Lengths.py -i contigs/final_contigs_c10K.fa > contigs/final_contigs_c10K.len
+```
+
+Then we calculate coverages for each contig in each sample:
+
+```bash
+for file in Map/*.sam
+do
+    stub=${file%.sam}
+    stub2=${stub#Map\/}
+    echo $stub	
+    (samtools view -h -b -S $file > ${stub}.bam; samtools view -b -F 4 ${stub}.bam > ${stub}.mapped.bam; samtools sort -m 1000000000 ${stub}.mapped.bam -o ${stub}.mapped.sorted.bam; bedtools genomecov -ibam ${stub}.mapped.sorted.bam -g contigs/final_contigs_c10K.len > ${stub}_cov.txt)&
+done
+```
+
+and use awk to aggregate the output of bedtools:
+
+```bash
+for i in Map/*_cov.txt 
+do 
+   echo $i
+   stub=${i%_cov.txt}
+   stub=${stub#Map\/}
+   echo $stub
+   awk -F"\t" '{l[$1]=l[$1]+($2 *$3);r[$1]=$4} END {for (i in l){print i","(l[i]/r[i])}}' $i > Map/${stub}_cov.csv
+done
+```
+
+and finally run the following perl script to collate the coverages across samples, where we have simply adjusted the format 
+from csv to tsv to be compatible with CONCOCT:
+
+```bash
+$DESMAN/scripts/Collate.pl Map | tr "," "\t" > Coverage.tsv
+```
+
+and run CONCOCT:
+```bash
+mkdir Concoct
+cd Concoct
+mv ../Coverage.tsv .
+concoct --coverage_file Coverage.tsv --composition_file ../contigs/final_contigs_c10K.fa
+cd ..
+```
 
