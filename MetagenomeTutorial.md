@@ -109,7 +109,7 @@ have created an environmental variables that points to the CONCOCT install direc
 echo $CONCOCT
 ```
 
-##Mapping
+###Mapping
 
 First we cut up contigs and place in new dir:
 
@@ -184,7 +184,7 @@ from csv to tsv to be compatible with CONCOCT:
 Collate.pl Map | tr "," "\t" > Coverage.tsv
 ```
 
-##Run CONCOCT
+###Run CONCOCT
 
 and run CONCOCT:
 ```bash
@@ -195,3 +195,18 @@ concoct --coverage_file Coverage.tsv --composition_file ../contigs/final_contigs
 cd ..
 ```
 
+###Gene annotation on contigs
+
+Run prodigal to annotate genes:
+```
+mkdir Annotate
+cd Annotate/
+LengthFilter.pl ../contigs/final_contigs_c10K.fa 1000 > final_contigs_gt1000_c10K.fa
+prodigal -i final_contigs_gt1000_c10K.fa -a final_contigs_gt1000_c10K.faa -d final_contigs_gt1000_c10K.fna  -f gff -p meta -o final_contigs_gt1000_c10K.gff
+```
+
+And annotate to COGs:
+```
+export COGSDB_DIR=~/Databases/rpsblast_db
+$CONCOCT/scripts/RPSBLAST.sh -f final_contigs_gt1000_c10K.faa -p -c 8 -r 1
+```
