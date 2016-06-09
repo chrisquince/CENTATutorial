@@ -63,3 +63,30 @@ and generate a heatmap:
 ```
 python ~/Installed/metaphlan2/utils/metaphlan_hclust_heatmap.py -c bbcry --top 25 --minv 0.1 -s log --in MetaphlanMerged/merged_abundance_table.txt --out MetaphlanMerged/abundance_heatmap.png
 ```
+
+##Assembly based metagenomics analysis
+
+We are now going to perform a basic assembly based metagenomics analysis of these same samples. This will involve 
+a collection of different software programs:
+
+1. [megahit](https://github.com/voutcn/megahit): A highly efficient metagenomics assembler currently our default for most studies
+
+2. [bwa](https://github.com/lh3/bwa): Necessary for mapping reads onto contigs
+
+4. [samtools] (http://www.htslib.org/download/): Utilities for processing mapped files
+
+5. [CONCOCT](https://github.com/BinPro/CONCOCT): Our own contig binning algorithm
+
+6. [prodigal] (https://github.com/hyattpd/prodigal/releases/): Used for calling genes on contigs
+
+7. [gnu parallel] (http://www.gnu.org/software/parallel/): Used for parallelising rps-blast
+
+8. [standalone blast] (http://www.ncbi.nlm.nih.gov/books/NBK52640/): Need rps-blast
+
+9. COG RPS database: ftp://ftp.ncbi.nih.gov/pub/mmdb/cdd/little_endian/ Cog databases
+
+10. [GFF python parser] (https://github.com/chapmanb/bcbb/tree/master/gff)
+
+
+a quick co-assembly of these samples using a program called megahit:
+
