@@ -50,6 +50,16 @@ do
     stub=${file%_R12.fasta}
     stub=${stub#MetaTutorial\/}
     echo $stub
-    metaphlan2.py $file --input_type fasta --nproc 8 > MetaphlanResults/${stub}.txt
+    metaphlan2.py $file --input_type fasta --nproc 8 > MetaphlanResults/${stub}_pm.txt
 done
+```
+
+Then when we are done we merge these tables:
+```
+python ~/Installed/metaphlan2/utils/merge_metaphlan_tables.py MetaphlanResults/*_pm.txt > MetaphlanMerged/merged_abundance_table.txt
+```
+
+and generate a heatmap:
+```
+python ~/Installed/metaphlan2/utils/metaphlan_hclust_heatmap.py -c bbcry --top 25 --minv 0.1 -s log --in MetaphlanMerged/merged_abundance_table.txt --out MetaphlanMerged/abundance_heatmap.png
 ```
