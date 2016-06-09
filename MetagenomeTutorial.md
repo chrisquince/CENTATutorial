@@ -109,6 +109,8 @@ have created an environmental variables that points to the CONCOCT install direc
 echo $CONCOCT
 ```
 
+##Mapping
+
 First we cut up contigs and place in new dir:
 
 ```bash
@@ -181,6 +183,8 @@ from csv to tsv to be compatible with CONCOCT:
 ```bash
 Collate.pl Map | tr "," "\t" > Coverage.tsv
 ```
+
+##Run CONCOCT
 
 and run CONCOCT:
 ```bash
