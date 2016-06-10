@@ -66,7 +66,7 @@ tar -xzf moving_pictures_tutorial-1.9.0.tgz
 
 Have a look at the README:
 ```
-more moving_pictures_tutorial-1.9.0/README.txt
+less moving_pictures_tutorial-1.9.0/README.txt
 ```
 
 We'll change to the moving_pictures_tutorial-1.9.0/illumina directory for the remaining steps: 
@@ -82,7 +82,7 @@ from four sites on the bodies of two individuals at mutliple time points. The me
 therefore includes a subject identifier, a timepoint, and a body site for each sample. You can review the
  map.tsv file by:
  ```
- more map.tsv
+ less map.tsv
  ```
 or view the published [Google Spreadsheet version]
 (https://docs.google.com/spreadsheets/d/1FXHtTmvw1gM4oUMbRdwQIEOZJlhFGeMNUvZmuEFqpps/pubhtml?gid=0&single=true), 
