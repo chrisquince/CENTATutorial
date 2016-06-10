@@ -194,9 +194,14 @@ throw away and the number of samples you throw away. For some perspective on thi
 
 ##Run diversity analyses
 
-Bug fix
+Bug fix 1
 ```
 echo "backend : agg" > ~/.config/matplotlib/matplotlibrc
+```
+
+Bug fix2
+```
+pip install 'matplotlib==1.4.3'
 ```
 
 Here we're running the core_diversity_analyses.py script which applies many of the 
