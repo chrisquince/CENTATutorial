@@ -194,6 +194,11 @@ throw away and the number of samples you throw away. For some perspective on thi
 
 ##Run diversity analyses
 
+Bug fix
+```
+echo "backend : agg" > ~/.config/matplotlib/matplotlibrc
+```
+
 Here we're running the core_diversity_analyses.py script which applies many of the 
 "first-pass" diversity analyses that users are generally interested in. The main 
 output that users will interact with is the index.html file, which provides 
