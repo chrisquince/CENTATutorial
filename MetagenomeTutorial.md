@@ -207,6 +207,15 @@ prodigal -i final_contigs_gt1000_c10K.fa -a final_contigs_gt1000_c10K.faa -d fin
 
 And annotate to COGs:
 ```
-export COGSDB_DIR=~/Databases/rpsblast_db
-$CONCOCT/scripts/RPSBLAST.sh -f final_contigs_gt1000_c10K.faa -p -c 8 -r 1
+rpsblast -i final_contigs_gt1000_c10K.faa -d ~/Databases/rpsblast_db/Cog -e 0.00001 -m 8  >  final_contigs_gt1000_c10K.rpsblast
+```
+
+Then generate SCG frequencies in clusters:
+```
+$CONCOCT/scripts/COG_table.py -b final_contigs_gt1000_c10K.rpsblast -m $CONCOCT/scgs/scg_cogs_min0.97_max1.03_unique_genera.txt -c ../Concoct/clustering_gt1000.csv --cdd_cog_file $CONCOCT/scgs/cdd_to_cog.tsv > clustering_gt1000_scg.tsv
+```
+
+and a pdf:
+```
+$CONCOCT/scripts/COGPlot.R -s clustering_gt1000_scg.tsv -o clustering_gt1000_scg.pdf
 ```
